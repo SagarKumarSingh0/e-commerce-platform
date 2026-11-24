@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout - ShopHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Extra styles for the payment options */
+    .payment-options {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .payment-option {
+      flex: 1;
+      min-width: 120px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .payment-option:hover {
+      border-color: var(--primary);
+    }
+    .payment-option.active {
+      border-color: var(--primary);
+      background: #eef2ff;
+      font-weight: 600;
+    }
+    .payment-option input {
+      display: none;
+    }
+    .payment-fields {
+      display: none;
+      padding: 1rem;
+      background: var(--light);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .payment-fields.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">🛍️ ShopHub</a>
+      <div class="nav-links" style="margin-left:auto">
+        <a href="/">Home</a>
+        <a href="/pages/cart.html">Cart</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding:2rem 20px">
+    <h1 style="margin-bottom:1.5rem">Checkout</h1>
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:2rem;max-width:1000px;margin:0 auto">
+      
+      <!-- Left Side: Shipping & Payment Forms -->
+      <div style="background:white;padding:2rem;border-radius:12px;box-shadow:var(--shadow)">
+        <form id="checkoutForm">
+          
+          <!-- Shipping Information -->
+          <h3 style="margin-bottom:1rem">Shipping Information</h3>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="fullName" required>
+          </div>
+          <div class="form-group">
+            <label>Street Address</label>
+            <input type="text" id="street" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" id="state" required>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group">
+              <label>Pin Code</label>
+              <input type="text" id="zipCode" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" id="phone" required pattern="[0-9]{10}">
+            </div>
+          </div>
+          <input type="hidden" id="country" value="India">
+
+          <!-- Payment Method Selection -->
+          <h3 style="margin:1.5rem 0 1rem">Payment Method</h3>
+          
+          <div class="payment-options">
+            <label class="payment-option active" id="opt-card">
+              <input type="radio" name="paymentMethod" value="card" checked>
+              💳 Card
+            </label>
+            <label class="payment-option" id="opt-upi">
+              <input type="radio" name="paymentMethod" value="upi">
+              📱 UPI
+            </label>
+            <label class="payment-option" id="opt-cod">
+              <input type="radio" name="paymentMethod" value="cod">
+              💵 Cash on Delivery
+            </label>
+          </div>
+
+          <!-- Card Fields -->
+          <div id="fields-card" class="payment-fields active">
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" placeholder="4242 4242 4242 4242" maxlength="19">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+              <div class="form-group">
+                <label>Expiry</label>
+                <input type="text" placeholder="MM/YY" maxlength="5">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" placeholder="123" maxlength="3">
+              </div>
+            </div>
+          </div>
+
+          <!-- UPI Fields -->
+          <div id="fields-upi" class="payment-fields">
+            <div class="form-group">
+              <label>UPI ID</label>
+              <input type="text" id="upiId" placeholder="yourname@upi (e.g., 9876543210@paytm)">
+              <small style="color:var(--gray);font-size:0.8rem;">Enter your virtual payment address</small>
+            </div>
+          </div>
+
+          <!-- COD Fields -->
+          <div id="fields-cod" class="payment-fields">
+            <p style="color:var(--gray); font-size:0.95rem; text-align:center;">
+              Pay securely with cash when your order is delivered.<br>
+              (A ₹40 delivery fee might apply)
+            </p>
+          </div>
+
+          <!-- Demo Notice -->
+          <p style="font-size:0.85rem;color:#6b7280;margin-top:0.5rem;text-align:center;">
+            ⚠️ Demo mode: This is a mock checkout. No real money will be deducted.
+          </p>
+
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem; font-size:1.1rem;">
+            Place Order
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Side: Order Summary -->
+      <div id="checkoutSummary" class="cart-summary"></div>
+      
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/checkout.js"></script>
+  
+  <script>
+    // Logic to switch between Card, UPI, and COD forms
+    const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    const options = document.querySelectorAll('.payment-option');
+    
+    paymentRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        // Reset styles
+        options.forEach(o => o.classList.remove('active'));
+        document.querySelectorAll('.payment-fields').forEach(f => f.classList.remove('active'));
+        
+        // Activate selected style
+        e.target.closest('.payment-option').classList.add('active');
+        
+        // Show selected fields
+        document.getElementById('fields-' + e.target.value).classList.add('active');
+      });
+    });
+  </script>
+  <script src="/js/chatbot.js"></script>
+</body>
+</html>

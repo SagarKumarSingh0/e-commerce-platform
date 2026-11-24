@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart - ShopHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">🛍️ ShopHub</a>
+      <div class="nav-links" style="margin-left:auto">
+        <a href="/">Home</a>
+        <a href="/pages/products.html">Products</a>
+        <a href="/pages/cart.html" class="cart-link">🛒 Cart <span id="cartCount" class="cart-badge">0</span></a>
+        <a href="/pages/orders.html" id="ordersLink" class="hidden">Orders</a>
+        <div id="authArea"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 style="margin:2rem 0 1rem">Shopping Cart</h1>
+    <div class="cart-container">
+      <div id="cartItems" class="cart-items">
+        <div class="loading">Loading...</div>
+      </div>
+      <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <div id="summary"></div>
+        <button id="checkoutBtn" class="btn btn-primary" style="width:100%;margin-top:1rem" disabled>Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/chatbot.js"></script>
+</body>
+</html>

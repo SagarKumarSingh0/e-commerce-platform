@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders - ShopHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">🛍️ ShopHub</a>
+      <div class="nav-links" style="margin-left:auto">
+        <a href="/">Home</a>
+        <a href="/pages/products.html">Products</a>
+        <a href="/pages/cart.html">Cart</a>
+        <div id="authArea"></div>
+      </div>
+    </div>
+  </nav>
+  <div class="container" style="padding:2rem 20px">
+    <h1 style="margin-bottom:1.5rem">My Orders</h1>
+    <div id="ordersList"></div>
+  </div>
+  <script src="/js/common.js"></script>
+  <script>
+    const loadOrders = async () => {
+      if (!getUser()) { window.location.href = '/pages/login.html'; return; }
+      try {
+        const orders = await apiFetch('/orders/mine');
+        const container = document.getElementById('ordersList');
+        if (!orders.length) {
+          container.innerHTML = '<p style="text-align:center;padding:3rem;color:#6b7280">No orders yet. <a href="/pages/products.html" style="color:#6366f1">Start shopping</a></p>';
+          return;
+        }
+        container.innerHTML = orders.map(o => `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <strong>Order #${o._id.slice(-8).toUpperCase()}</strong>
+                <div style="font-size:0.85rem;color:#6b7280">${new Date(o.createdAt).toLocaleDateString()} · ${o.isPaid ? '✅ Paid' : '⏳ Unpaid'}</div>
+              </div>
+              <span class="order-status status-${o.status}">${o.status}</span>
+            </div>
+            ${o.items.map(i => `<div class="order-item"><span>${i.name} × ${i.quantity}</span><span>₹${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+            <div class="order-item" style="border-top:1px solid #e5e7eb;margin-top:0.5rem;padding-top:0.8rem;font-weight:700">
+              <span>Total</span><span>₹${o.totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { showToast(err.message, 'error'); }
+    };
+    document.addEventListener('DOMContentLoaded', loadOrders);
+  </script>
+  <script src="/js/chatbot.js"></script>
+</body>
+</html>
